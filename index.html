@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+    <link rel="icon" href="./img/Calculator Icon.png">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="menu">
+        <div class="left">
+            <img src="empty" alt="weathericon" id="weatherimg" class="weathericon">
+            <span id="tempature" class="tempature">tempature</span>
+        </div>
+        <div class="right">
+            <span id="h">h</span><span>:</span><span id="m">m</span>
+        </div>
+    </div>
+    <div class="calculator">
+        <p class="inputval">0</p>
+            <button class="other">AC</button>
+            <button class="other">+/-</button>
+            <button class="other">%</button>
+            <button class="operator">&divide;</button><br>
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button class="operator">&times;</button><br>
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button class="operator">&minus;</button><br>
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button class="operator">&plus;</button><br>
+            <button class="number" style="aspect-ratio: 2.225/1;">0</button>
+            <button class="number">&period;</button>
+            <button class="operator">&equals;</button>
+
+    </div>
+</body>
+<script>
+    lkey = "d7d2a3a13121ca"
+    fetch('https://ipinfo.io/json?token=' + lkey)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Location Data:', data);
+            wkey = "84962e27592b4d0d82b223541250305"
+            fetch('http://api.weatherapi.com/v1/current.json?key=' + wkey + '&q=' + data.postal)
+                .then(response => response.json())
+                .then(weather => {
+                    console.log('Weather Data:', weather)
+                    document.getElementById("weatherimg").setAttribute("src", `https:${weather.current.condition.icon}`)
+                    document.getElementById("tempature").innerHTML = (weather.current.temp_c + " C°")
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching location data:', error);
+        });
+</script>
+<script>
+    (function () {
+
+        hour = document.getElementById("h")
+        minutes = document.getElementById("m")
+        setInterval(function () {
+            let time = new Date()
+            hour.innerHTML = time.getHours().toString().padStart(2, '0')
+            minutes.innerHTML = time.getMinutes().toString().padStart(2, '0')
+        }, 1000)
+    }());
+</script>
+<script>
+    const inp = document.querySelector(".inputval")
+    const other = document.querySelectorAll(".other")
+    const operator = document.querySelectorAll(".operator")
+    const number = document.querySelectorAll(".number")
+    const initialvalues = ["0", "NaN", "undefined", "Infinity"]
+    operator.forEach(function (item) {
+        item.addEventListener("click", function (e){
+            const target = e.target.innerHTML
+            neweq = inp.innerHTML.replace(/×/g, "*")
+            neweq = neweq.replace(/÷/g, "/")
+            if (target === "="){
+                inp.innerHTML = eval(neweq)
+            }else{
+                inp.innerHTML += target
+            }
+        })
+    })
+    number.forEach(function (item) {
+        item.addEventListener("click", function (e){
+            if (initialvalues.includes(inp.innerHTML)){
+                inp.innerHTML = ""
+            }
+            inp.innerHTML += e.target.innerHTML
+        })
+    })
+    other.forEach(function (item) {
+        item.addEventListener("click", function (e){
+            const target = e.target.innerHTML
+            if (target === "AC"){
+                inp.innerHTML = "0"
+            }
+            if (target === "+/-"){
+                inp.innerHTML = 0-inp.innerHTML
+            }
+            if (target === "%"){
+                inp.innerHTML = inp.innerHTML/100
+            }
+        })
+    })
+</script>
+</html>
