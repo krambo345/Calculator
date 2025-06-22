@@ -12,8 +12,8 @@ html, body {
     align-items: center;
     display: flex;
     text-align: left;
-    margin-left: -1%;
-    margin-top: -1.25%;
+    margin-left: -0.5%;
+    margin-top: -0.75%;
     .weathericon{
         height: 70px;
     }
